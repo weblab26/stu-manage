@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management System</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+
+<body ng-app="studentApp" ng-controller="studentController">
+
+    <h1>Student Management System</h1>
+
+    <form ng-submit="saveStudent()">
+        Name:
+        <input type="text" ng-model="student.name" required>
+        <br><br>
+
+        Register Number:
+        <input type="text" ng-model="student.regNo" required>
+        <br><br>
+
+        Department:
+        <input type="text" ng-model="student.department" required>
+        <br><br>
+
+        <button type="submit">
+            {{ editing ? 'Update' : 'Add' }} Student
+        </button>
+
+        <button type="button" ng-click="clearForm()">Clear</button>
+    </form>
+
+    <hr>
+
+    <h3>Student List</h3>
+
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Name</th>
+            <th>Register Number</th>
+            <th>Department</th>
+            <th>Actions</th>
+        </tr>
+
+        <tr ng-repeat="s in students track by s._id">
+            <td>{{ s.name }}</td>
+            <td>{{ s.regNo }}</td>
+            <td>{{ s.department }}</td>
+            <td>
+                <button ng-click="editStudent(s)">Edit</button>
+                <button ng-click="deleteStudent(s._id)">Delete</button>
+            </td>
+        </tr>
+
+        <tr ng-if="students.length == 0">
+            <td colspan="4">No students found</td>
+        </tr>
+    </table>
+
+    <script>
+        var app = angular.module('studentApp', []);
+
+        app.controller('studentController', function ($scope, $http) {
+
+            $scope.students = [];
+            $scope.student = {};
+            $scope.editing = false;
+
+            // READ
+            $scope.loadStudents = function () {
+                $http.get('/api/students').then(function (response) {
+                    $scope.students = response.data;
+                });
+            };
+
+            // CREATE and UPDATE
+            $scope.saveStudent = function () {
+                var request;
+
+                if ($scope.editing) {
+                    request = $http.put(
+                        '/api/students/' + $scope.student._id,
+                        $scope.student
+                    );
+                } else {
+                    request = $http.post(
+                        '/api/students',
+                        $scope.student
+                    );
+                }
+
+                request.then(function () {
+                    $scope.loadStudents();
+                    $scope.clearForm();
+                });
+            };
+
+            // EDIT
+            $scope.editStudent = function (s) {
+                $scope.student = angular.copy(s);
+                $scope.editing = true;
+            };
+
+            // DELETE
+            $scope.deleteStudent = function (id) {
+                $http.delete('/api/students/' + id).then(function () {
+                    $scope.loadStudents();
+                    $scope.clearForm();
+                });
+            };
+
+            // CLEAR FORM
+            $scope.clearForm = function () {
+                $scope.student = {};
+                $scope.editing = false;
+            };
+
+            $scope.loadStudents();
+        });
+    </script>
+
+</body>
+</html>
