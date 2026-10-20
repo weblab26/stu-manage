@@ -1,16 +1,16 @@
+
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
-const path = require('path');
 
 const app = express();
-
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
-const client = new MongoClient('YOUR_MONGODB_CONNECTION_STRING');
+const client = new MongoClient('mongodb+srv://<username>:<password>zfarwj.mongodb.net/');
 
 async function start() {
     await client.connect();
+    console.log('MongoDB connected');
 
     const students = client.db('studentDB').collection('students');
 
@@ -19,7 +19,7 @@ async function start() {
         res.json(await students.find().toArray());
     });
 
-    // CREATE
+    // ADD
     app.post('/api/students', async (req, res) => {
         const result = await students.insertOne(req.body);
         res.json({ _id: result.insertedId, ...req.body });
@@ -31,7 +31,7 @@ async function start() {
             { _id: new ObjectId(req.params.id) },
             { $set: req.body }
         );
-        res.json({ success: true });
+        res.json({ message: 'Student updated' });
     });
 
     // DELETE
@@ -39,7 +39,7 @@ async function start() {
         await students.deleteOne({
             _id: new ObjectId(req.params.id)
         });
-        res.json({ success: true });
+        res.json({ message: 'Student deleted' });
     });
 
     app.listen(3000, () => {
@@ -48,4 +48,7 @@ async function start() {
 }
 
 start().catch(console.error);
-```
+
+//npm.cmd install express mongodb  
+//server.js
+
