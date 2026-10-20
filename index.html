@@ -1,122 +1,109 @@
+
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
 <head>
-    <title>Student Management System</title>
+    <title>Student Management</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
 </head>
 
-<body ng-app="studentApp" ng-controller="studentController">
+<body ng-controller="ctrl">
 
-    <h1>Student Management System</h1>
+<h2>Student Management System</h2>
 
-    <form ng-submit="saveStudent()">
-        Name:
-        <input type="text" ng-model="student.name" required>
-        <br><br>
+<!-- Student Form -->
+<form ng-submit="save()">
+    <input ng-model="s.name" placeholder="Name" required>
+    <input ng-model="s.regNo" placeholder="Register No" required>
+    <input ng-model="s.department" placeholder="Department" required>
 
-        Register Number:
-        <input type="text" ng-model="student.regNo" required>
-        <br><br>
+    <button type="submit">{{edit ? 'Update' : 'Add'}}</button>
+    <button type="button" ng-click="clear()">Clear</button>
+</form>
 
-        Department:
-        <input type="text" ng-model="student.department" required>
-        <br><br>
+<p>{{msg}}</p>
 
-        <button type="submit">
-            {{ editing ? 'Update' : 'Add' }} Student
-        </button>
+<!-- Student Table -->
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Name</th>
+        <th>Register No</th>
+        <th>Department</th>
+        <th>Actions</th>
+    </tr>
 
-        <button type="button" ng-click="clearForm()">Clear</button>
-    </form>
+    <tr ng-repeat="x in list track by x._id">
+        <td>{{x.name}}</td>
+        <td>{{x.regNo}}</td>
+        <td>{{x.department}}</td>
+        <td>
+            <button type="button" ng-click="editStudent(x)">Edit</button>
+            <button type="button" ng-click="deleteStudent(x._id)">Delete</button>
+        </td>
+    </tr>
+</table>
 
-    <hr>
+<script>
+var app = angular.module('app', []);
 
-    <h3>Student List</h3>
+app.controller('ctrl', function($scope, $http) {
 
-    <table border="1" cellpadding="8">
-        <tr>
-            <th>Name</th>
-            <th>Register Number</th>
-            <th>Department</th>
-            <th>Actions</th>
-        </tr>
+    $scope.list = [];
+    $scope.s = {};
+    $scope.edit = false;
 
-        <tr ng-repeat="s in students track by s._id">
-            <td>{{ s.name }}</td>
-            <td>{{ s.regNo }}</td>
-            <td>{{ s.department }}</td>
-            <td>
-                <button ng-click="editStudent(s)">Edit</button>
-                <button ng-click="deleteStudent(s._id)">Delete</button>
-            </td>
-        </tr>
-
-        <tr ng-if="students.length == 0">
-            <td colspan="4">No students found</td>
-        </tr>
-    </table>
-
-    <script>
-        var app = angular.module('studentApp', []);
-
-        app.controller('studentController', function ($scope, $http) {
-
-            $scope.students = [];
-            $scope.student = {};
-            $scope.editing = false;
-
-            // READ
-            $scope.loadStudents = function () {
-                $http.get('/api/students').then(function (response) {
-                    $scope.students = response.data;
-                });
-            };
-
-            // CREATE and UPDATE
-            $scope.saveStudent = function () {
-                var request;
-
-                if ($scope.editing) {
-                    request = $http.put(
-                        '/api/students/' + $scope.student._id,
-                        $scope.student
-                    );
-                } else {
-                    request = $http.post(
-                        '/api/students',
-                        $scope.student
-                    );
-                }
-
-                request.then(function () {
-                    $scope.loadStudents();
-                    $scope.clearForm();
-                });
-            };
-
-            // EDIT
-            $scope.editStudent = function (s) {
-                $scope.student = angular.copy(s);
-                $scope.editing = true;
-            };
-
-            // DELETE
-            $scope.deleteStudent = function (id) {
-                $http.delete('/api/students/' + id).then(function () {
-                    $scope.loadStudents();
-                    $scope.clearForm();
-                });
-            };
-
-            // CLEAR FORM
-            $scope.clearForm = function () {
-                $scope.student = {};
-                $scope.editing = false;
-            };
-
-            $scope.loadStudents();
+    // Get students
+    $scope.load = function() {
+        $http.get('/api/students').then(function(response) {
+            $scope.list = response.data;
         });
-    </script>
+    };
+
+    // Add or Update student
+    $scope.save = function() {
+        var request;
+
+        if ($scope.edit) {
+            request = $http.put('/api/students/' + $scope.s._id, $scope.s);
+        } else {
+            request = $http.post('/api/students', $scope.s);
+        }
+
+        request.then(function() {
+            $scope.msg = 'Saved successfully';
+            $scope.clear();
+            $scope.load();
+        }).catch(function(error) {
+            $scope.msg = 'Error saving student';
+            console.log(error);
+        });
+    };
+
+    // Select student for editing
+    $scope.editStudent = function(x) {
+        $scope.s = angular.copy(x);
+        $scope.edit = true;
+    };
+
+    // Delete student
+    $scope.deleteStudent = function(id) {
+        $http.delete('/api/students/' + id).then(function() {
+            $scope.msg = 'Student deleted';
+            $scope.load();
+        }).catch(function(error) {
+            $scope.msg = 'Error deleting student';
+            console.log(error);
+        });
+    };
+
+    // Clear form
+    $scope.clear = function() {
+        $scope.s = {};
+        $scope.edit = false;
+    };
+
+    $scope.load();
+});
+</script>
 
 </body>
 </html>
