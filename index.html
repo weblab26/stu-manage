@@ -60,22 +60,14 @@ app.controller('ctrl', function($scope, $http) {
 
     // Add or Update student
     $scope.save = function() {
-        var request;
 
         if ($scope.edit) {
-            request = $http.put('/api/students/' + $scope.s._id, $scope.s);
+             $http.put('/api/students/' + $scope.s._id, $scope.s);
+              $scope.load();
         } else {
-            request = $http.post('/api/students', $scope.s);
-        }
-
-        request.then(function() {
-            $scope.msg = 'Saved successfully';
-            $scope.clear();
-            $scope.load();
-        }).catch(function(error) {
-            $scope.msg = 'Error saving student';
-            console.log(error);
-        });
+            $http.post('/api/students', $scope.s);
+              $scope.load();
+        }     
     };
 
     // Select student for editing
@@ -89,12 +81,8 @@ app.controller('ctrl', function($scope, $http) {
         $http.delete('/api/students/' + id).then(function() {
             $scope.msg = 'Student deleted';
             $scope.load();
-        }).catch(function(error) {
-            $scope.msg = 'Error deleting student';
-            console.log(error);
-        });
+        })
     };
-
     // Clear form
     $scope.clear = function() {
         $scope.s = {};
