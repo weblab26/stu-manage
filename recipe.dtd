@@ -1,0 +1,6 @@
+<!ELEMENT recipebook (recipe+)>
+<!ELEMENT recipe (name, cuisine, ingredients)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT cuisine (#PCDATA)>
+<!ELEMENT ingredients (ingredient+)>
+<!ELEMENT ingredient (#PCDATA)>

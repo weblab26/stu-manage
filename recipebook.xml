@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="recipe.xsl"?>
+<!DOCTYPE recipebook SYSTEM "recipe.dtd">
+<recipebook>
+  <recipe>
+    <name>Margherita Pizza</name>
+    <cuisine>Italian</cuisine>
+    <ingredients>
+      <ingredient>Pizza dough</ingredient>
+      <ingredient>Tomato sauce</ingredient>
+      <ingredient>Mozzarella cheese</ingredient>
+      <ingredient>Fresh basil</ingredient>
+    </ingredients>
+  </recipe>
+  <recipe>
+    <name>Chicken Biryani</name>
+    <cuisine>Indian</cuisine>
+    <ingredients>
+      <ingredient>Basmati rice</ingredient>
+      <ingredient>Chicken</ingredient>
+      <ingredient>Yogurt</ingredient>
+      <ingredient>Biryani masala</ingredient>
+    </ingredients>
+  </recipe>
+  <recipe>
+    <name>Sushi Roll</name>
+    <cuisine>Japanese</cuisine>
+    <ingredients>
+      <ingredient>Sushi rice</ingredient>
+      <ingredient>Nori sheets</ingredient>
+      <ingredient>Cucumber</ingredient>
+    </ingredients>
+  </recipe>
+  <recipe>
+    <name>Tacos</name>
+    <cuisine>Mexican</cuisine>
+    <ingredients>
+      <ingredient>Tortillas</ingredient>
+      <ingredient>Minced beef</ingredient>
+      <ingredient>Salsa</ingredient>
+    </ingredients>
+  </recipe>
+</recipebook>

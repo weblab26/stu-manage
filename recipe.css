@@ -1,0 +1,38 @@
+/* Must target the actual XML tag names */
+recipebook {
+  display: block;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #fffaf0;
+}
+
+recipe {
+  display: block;
+  border: 1px solid #d35400;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+name {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #b34700;
+}
+
+cuisine {
+  display: block;
+  font-style: italic;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+ingredients {
+  display: block;
+}
+
+ingredient {
+  display: list-item;
+  margin-left: 20px;
+}
