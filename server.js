@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static('public'));
 
-const client = new MongoClient('mongodb+srv://<username>:<password>zfarwj.mongodb.net/');
+const client = new MongoClient('mongodb+srv://shanmugaperumal_db_user:perumal4561@cluster0.gzfarwj.mongodb.net/');
 
 async function start() {
     await client.connect();
@@ -21,17 +21,26 @@ async function start() {
 
     // ADD
     app.post('/api/students', async (req, res) => {
-        const result = await students.insertOne(req.body);
-        res.json({ _id: result.insertedId, ...req.body });
+        const student = {
+            name: req.body.name,
+            regNo: req.body.regNo,
+            department: req.body.department
+        };
+        const result = await students.insertOne(student);
+        res.json({ _id: result.insertedId, ...student });
     });
 
     // UPDATE
     app.put('/api/students/:id', async (req, res) => {
         await students.updateOne(
             { _id: new ObjectId(req.params.id) },
-            { $set: req.body }
+            { $set: {
+                name: req.body.name,
+                regNo: req.body.regNo,
+                department: req.body.department
+            }}
         );
-        res.json({ message: 'Student updated' });
+        res.json({ message: 'Updated successfully' });
     });
 
     // DELETE
@@ -39,7 +48,7 @@ async function start() {
         await students.deleteOne({
             _id: new ObjectId(req.params.id)
         });
-        res.json({ message: 'Student deleted' });
+        res.json({ message: 'Deleted successfully' });
     });
 
     app.listen(3000, () => {
@@ -48,7 +57,3 @@ async function start() {
 }
 
 start().catch(console.error);
-
-//npm.cmd install express mongodb  
-//server.js
-
