@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static('public'));
 
-const client = new MongoClient('mongodb+srv://shanmugaperumal_db_user:perumal4561@cluster0.gzfarwj.mongodb.net/');
+const client = new MongoClient('mongodb+srv://<mongo_db_user>:<password>@cluster0.gzfarwj.mongodb.net/');
 
 async function start() {
     await client.connect();
